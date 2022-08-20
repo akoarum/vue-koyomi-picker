@@ -4,7 +4,7 @@ module.exports = {
     browser: true,
     node: true,
   },
-  extends: ['plugin:prettier/recommended', 'plugin:vue/recommended'],
+  extends: ['plugin:prettier/recommended', 'plugin:vue/essential'],
   parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 2020,
