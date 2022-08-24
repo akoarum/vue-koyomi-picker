@@ -1,26 +1,20 @@
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import type { ComputedRef } from 'vue'
-
-export type MonthOption = {
-  month: number
-  isActive: boolean
-}
+import type { SelectOption } from '../components'
 
 export const useMonthOptions = (currentDisplayYear: ComputedRef<number>, props?: { from?: Date; to?: Date }) => {
-  const isVisibleMonthOptions = ref(false)
-
-  const monthOptions = computed<MonthOption[]>(() => {
+  const monthOptions = computed<SelectOption[]>(() => {
     const currentDisplayYearAfterFrom = props && props.from ? props.from.getFullYear() < currentDisplayYear.value : true
     const currentDisplayYearBeforeTo = props && props.to ? props.to.getFullYear() > currentDisplayYear.value : true
-    let options: MonthOption[] = new Array(12).fill(null).map((_, i) => ({
-      month: i,
+    let options: SelectOption[] = new Array(12).fill(null).map((_, i) => ({
+      value: i + 1,
       isActive: true,
     }))
 
     if (!currentDisplayYearAfterFrom && props && props.from) {
       const activeMonth = props.from.getMonth()
       options = options.map((option) => {
-        if (option.month >= activeMonth) return option
+        if (option.value - 1 >= activeMonth) return option
         return { ...option, isActive: false }
       })
     }
@@ -28,7 +22,7 @@ export const useMonthOptions = (currentDisplayYear: ComputedRef<number>, props?:
     if (!currentDisplayYearBeforeTo && props && props.to) {
       const activeMonth = props.to.getMonth()
       options = options.map((option) => {
-        if (option.month <= activeMonth) return option
+        if (option.value - 1 <= activeMonth) return option
         return { ...option, isActive: false }
       })
     }
@@ -36,13 +30,7 @@ export const useMonthOptions = (currentDisplayYear: ComputedRef<number>, props?:
     return options
   })
 
-  const toggleMonthOptions = () => {
-    isVisibleMonthOptions.value = !isVisibleMonthOptions.value
-  }
-
   return {
-    isVisibleMonthOptions,
     monthOptions,
-    toggleMonthOptions,
   }
 }

@@ -4,10 +4,10 @@ import { useMonthOptions } from '../../src/composables'
 describe('useMonthOptions', () => {
   const year = computed(() => 2022)
 
-  it('0 to 11 options should be obtainable', () => {
+  it('1 to 12 options should be obtainable', () => {
     const { monthOptions } = useMonthOptions(year)
     monthOptions.value.forEach((option, index) => {
-      expect(option.month).toBe(index)
+      expect(option.value).toBe(index + 1)
     })
   })
 
@@ -25,7 +25,7 @@ describe('useMonthOptions', () => {
     it('if it is the relevant year, it will be disabled before the "from" month', () => {
       const { monthOptions } = useMonthOptions(year, { from: new Date('2022-05-01') })
       monthOptions.value.forEach((option) => {
-        if (option.month < 4) {
+        if (option.value < 5) {
           expect(option.isActive).toBe(false)
         } else {
           expect(option.isActive).toBe(true)
@@ -43,7 +43,7 @@ describe('useMonthOptions', () => {
     it('if it is the relevant year, it will be disabled after the "to" month', () => {
       const { monthOptions } = useMonthOptions(year, { to: new Date('2022-10-01') })
       monthOptions.value.forEach((option) => {
-        if (option.month > 9) {
+        if (option.value > 10) {
           expect(option.isActive).toBe(false)
         } else {
           expect(option.isActive).toBe(true)
@@ -56,19 +56,12 @@ describe('useMonthOptions', () => {
     it('only within a period of time should be active', () => {
       const { monthOptions } = useMonthOptions(year, { from: new Date('2022-04-01'), to: new Date('2022-10-15') })
       monthOptions.value.forEach((option) => {
-        if (option.month > 2 && option.month < 10) {
+        if (option.value > 3 && option.value < 11) {
           expect(option.isActive).toBe(true)
         } else {
           expect(option.isActive).toBe(false)
         }
       })
     })
-  })
-
-  it('toggle isVisible', () => {
-    const { isVisibleMonthOptions, toggleMonthOptions } = useMonthOptions(year)
-    expect(isVisibleMonthOptions.value).toBe(false)
-    toggleMonthOptions()
-    expect(isVisibleMonthOptions.value).toBe(true)
   })
 })

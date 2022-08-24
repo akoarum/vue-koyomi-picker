@@ -44,7 +44,9 @@
   "dependencies": {
     "@vue/compiler-sfc": "^3.2.37",
     "date-fns": "^2.29.1",
-    "typescript": "^4.7.4"
+    "inter-ui": "^3.19.3",
+    "typescript": "^4.7.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.18.9",
@@ -56,10 +58,13 @@
     "@storybook/addon-interactions": "^6.5.10",
     "@storybook/addon-links": "^6.5.10",
     "@storybook/builder-webpack4": "^6.5.10",
+    "@storybook/builder-webpack5": "^6.5.10",
     "@storybook/manager-webpack4": "^6.5.10",
+    "@storybook/manager-webpack5": "^6.5.10",
     "@storybook/testing-library": "0.0.13",
     "@storybook/vue3": "^6.5.10",
     "@types/jest": "^28.1.7",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "@vue/eslint-config-prettier": "^7.0.0",
@@ -70,6 +75,7 @@
     "babel-loader": "^7.1.5",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-vue-jsx": "^3.7.0",
+    "css-loader": "^6.7.1",
     "eslint": "^8.22.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.3.0",
@@ -82,6 +88,9 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.32.1",
     "rollup-plugin-vue": "^6.0.0",
+    "sass": "^1.54.5",
+    "sass-loader": "^13.0.2",
+    "style-loader": "^3.3.1",
     "ts-jest": "^28.0.8",
     "vue": "^3.2.37",
     "vue-eslint-parser": "^9.0.3",
