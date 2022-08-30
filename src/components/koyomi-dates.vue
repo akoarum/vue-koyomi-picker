@@ -9,15 +9,11 @@
       <tr v-for="(week, i) in props.dates" :key="i" class="koyomi-dates__weekly">
         <td v-for="(day, j) in week" :key="day ? day.date.getDate() : j" class="koyomi-dates__daily">
           <button
-            ref="dateRef"
             :data-time="day.date.getTime()"
             :disabled="!day.isActive"
-            :tabindex="getTabIndex(day.date)"
             :class="getDateButtonClasses(day.date)"
             type="button"
             class="koyomi-dates__button"
-            @keydown="onKeydownOnDate"
-            @focus="onFocus(day.date)"
             @click="onClick(day.date)"
           >
             <time :datetime="format(day.date, 'yyyy-MM-dd')" class="koyomi-dates__date-time">
@@ -31,8 +27,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, computed, watch, onMounted, nextTick } from 'vue'
-import { format, startOfMonth, lastDayOfMonth } from 'date-fns'
+import { defineProps, defineEmits, computed } from 'vue'
+import { format } from 'date-fns'
 import type { DateOption } from '../composables'
 
 export type Props = {
@@ -61,136 +57,9 @@ const getDateButtonClasses = (date: Date): string[] => {
   return classes
 }
 
-const getTabIndex = (date: Date): 0 | -1 => {
-  if (props.selectedDate && props.selectedDate.getTime() === date.getTime()) return 0
-  return -1
-}
-
-const onFocus = (date: Date) => {
-  emits('click', date)
-}
-
 const onClick = (date: Date) => {
   emits('click', date)
-  setFocusIndex()
 }
-
-const dateRef = ref<HTMLButtonElement[]>()
-const focusIndex = ref<number[]>([0, 0])
-
-const dateRefMappings = computed(() => {
-  if (!props.dates.length) return []
-  if (!dateRef.value) return []
-
-  const refs = [...dateRef.value]
-  const calendar: HTMLButtonElement[][] = []
-  let weekly: HTMLButtonElement[] = []
-
-  refs
-    .sort((a, b) => (Number(a.getAttribute('data-time')!) < Number(b.getAttribute('data-time')!) ? -1 : 1))
-    .forEach((date, index) => {
-      weekly.push(date)
-      if (index % 7 === 6) {
-        calendar.push(weekly)
-        weekly = []
-      }
-    })
-
-  return calendar
-})
-
-watch(focusIndex, ([weekly, day]) => {
-  dateRefMappings.value[weekly][day].focus()
-})
-
-const setFocusIndex = () => {
-  const targetDate = props.selectedDate || today.value
-  const indexes = props.dates
-    .map((weekly, index) => {
-      const dateIndex = weekly.findIndex((date) => {
-        return (
-          date.date.getTime() ===
-          new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate()).getTime()
-        )
-      })
-      if (dateIndex < 0) return [-1, -1]
-      return [index, dateIndex]
-    })
-    .find((weekly) => weekly[0] > -1 && weekly[1] > -1)
-
-  if (!indexes) return
-  focusIndex.value = indexes
-}
-
-const onKeydownOnDate = (event: KeyboardEvent) => {
-  const updateFocusIndex = (sumWeekly: number, sumDay: number) => {
-    const [beforeWeekly, beforeDay] = focusIndex.value
-    if (sumDay < 0 && beforeDay === 0) {
-      if (beforeWeekly - 1 < 0) {
-        emits('update:month', -1)
-        nextTick(() => {
-          focusIndex.value = [props.dates.length - 1, 6]
-        })
-      } else {
-        focusIndex.value = [beforeWeekly - 1, 6]
-      }
-    } else if (sumDay > 0 && beforeDay === 6) {
-      if (beforeWeekly + 1 > props.dates.length - 1) {
-        emits('update:month', 1)
-        nextTick(() => {
-          focusIndex.value = [0, 0]
-        })
-      } else {
-        focusIndex.value = [beforeWeekly + 1, 0]
-      }
-    } else if (sumWeekly < 0 && beforeWeekly === 0) {
-      emits('update:month', -1)
-      nextTick(() => {
-        focusIndex.value = [props.dates.length - 1, beforeDay]
-      })
-    } else if (sumWeekly > 0 && beforeWeekly === props.dates.length - 1) {
-      emits('update:month', 1)
-      nextTick(() => {
-        focusIndex.value = [0, beforeDay]
-      })
-    } else {
-      focusIndex.value = [beforeWeekly + sumWeekly, beforeDay + sumDay]
-    }
-  }
-
-  switch (event.key) {
-    case 'ArrowUp':
-      updateFocusIndex(-1, 0)
-      event.preventDefault()
-      break
-    case 'ArrowDown':
-      updateFocusIndex(1, 0)
-      event.preventDefault()
-      break
-    case 'ArrowLeft':
-      updateFocusIndex(0, -1)
-      event.preventDefault()
-      break
-    case 'ArrowRight':
-      updateFocusIndex(0, 1)
-      event.preventDefault()
-      break
-    case 'Home':
-      const firstDay = startOfMonth(props.selectedDate || today.value)
-      updateFocusIndex(0, firstDay.getDay())
-      event.preventDefault()
-      break
-    case 'End':
-      const lastDay = lastDayOfMonth(props.selectedDate || today.value)
-      updateFocusIndex(props.dates.length - 1, lastDay.getDay())
-      event.preventDefault()
-      break
-  }
-}
-
-onMounted(() => {
-  setFocusIndex()
-})
 </script>
 
 <script lang="ts">
@@ -200,10 +69,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$bp: 440px;
+
 .koyomi-dates {
   table-layout: fixed;
   border-collapse: collapse;
   font-family: 'Inter', sans-serif;
+
+  @media screen and (max-width: 440px) {
+    width: 100%;
+  }
 }
 
 .koyomi-dates__day {
@@ -217,6 +92,7 @@ export default {
 
 .koyomi-dates__button {
   display: block;
+  margin: 0 auto;
   border-radius: 2px;
   border: none;
   box-shadow: none;

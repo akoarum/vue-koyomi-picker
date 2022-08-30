@@ -1,8 +1,10 @@
 import { ref, computed } from 'vue'
 import { startOfMonth, lastDayOfMonth, subMonths, addMonths, getWeekOfMonth, isBefore, isAfter } from 'date-fns'
+import { isDateIncludedInSameMonth } from '../helpers/is-date-included-in-same-month'
 
 export type Props = {
   modelValue: Date | null
+  selectedDate?: Date | null
   startDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6
   defaultDate?: Date
   from?: Date
@@ -11,6 +13,7 @@ export type Props = {
 
 export type DateOption = {
   date: Date
+  isSelected: boolean
   isActive: boolean
 }
 
@@ -34,9 +37,35 @@ export const useCalendar = (props: Props) => {
     return afterFromProp && beforeToProp
   }
 
+  const getSelectedDate = () => {
+    if (props.modelValue && isDateIncludedInSameMonth(props.modelValue, currentDisplayDate.value)) {
+      return new Date(props.modelValue.getFullYear(), props.modelValue.getMonth(), props.modelValue.getDate())
+    } else if (props.selectedDate && isDateIncludedInSameMonth(props.selectedDate, currentDisplayDate.value)) {
+      return new Date(props.selectedDate.getFullYear(), props.selectedDate.getMonth(), props.selectedDate.getDate())
+    } else if (
+      props.from &&
+      isDateIncludedInSameMonth(props.from, currentDisplayDate.value) &&
+      isBefore(currentDisplayDate.value, props.from)
+    ) {
+      return new Date(props.from.getFullYear(), props.from.getMonth(), props.from.getDate())
+    } else if (
+      props.to &&
+      isDateIncludedInSameMonth(props.to, currentDisplayDate.value) &&
+      isAfter(currentDisplayDate.value, props.to)
+    ) {
+      return new Date(props.to.getFullYear(), props.to.getMonth(), props.to.getDate())
+    }
+    return new Date(
+      currentDisplayDate.value.getFullYear(),
+      currentDisplayDate.value.getMonth(),
+      currentDisplayDate.value.getDate()
+    )
+  }
+
   const calendarData = computed<DateOption[][]>(() => {
     const data: DateOption[][] = []
     const countOfEndWeek = getWeekOfMonth(currentDisplayLastDayOfMonth.value, { weekStartsOn: props.startDay || 0 })
+    const selectedDate = getSelectedDate()
     let date: Date = currentDisplayFirstOfMonth.value
     const weekNumbers: number[] = []
 
@@ -51,6 +80,7 @@ export const useCalendar = (props: Props) => {
       for (let day = 0; day < 7; day++) {
         weekly.push({
           date: new Date(date),
+          isSelected: new Date(date).getTime() === selectedDate.getTime(),
           isActive: getDateIsActive(date),
         })
         date.setDate(date.getDate() + 1)

@@ -42,6 +42,7 @@
     "vue": "^3.2.37"
   },
   "dependencies": {
+    "@mdi/js": "^7.0.96",
     "@vue/compiler-sfc": "^3.2.37",
     "date-fns": "^2.29.1",
     "inter-ui": "^3.19.3",

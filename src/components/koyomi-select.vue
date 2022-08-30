@@ -26,6 +26,8 @@
               <button
                 ref="option"
                 :disabled="!option.isActive"
+                :ariaSelected="String(option.value === props.modelValue)"
+                role="option"
                 type="button"
                 class="koyomi-select__option-button"
                 @keydown="onKeydownOnOption"
@@ -45,8 +47,7 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, defineProps, defineEmits, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import type { SelectOption } from './types'
-import { eventNames } from 'process'
+import type { SelectOption } from '../types'
 
 type Props = {
   modelValue: number
@@ -114,6 +115,12 @@ const optionsStyle = computed<{ [key: string]: string }>(() => {
     maxHeight: `${height}px`,
   }
 })
+
+const getOptionClasses = (value: number): string[] => {
+  const classes: string[] = []
+  if (props.modelValue === value) classes.push('is-selected')
+  return classes
+}
 
 const onScroll = () => {
   const { top, left, width, height } = getHandlerRect()
@@ -274,6 +281,10 @@ export default {
   line-height: 1;
   cursor: pointer;
   transition: background 0.3s ease;
+
+  &[aria-selected='true'] {
+    color: var(--vue-koyomi-primary);
+  }
 
   &:disabled {
     color: #c9c9c9;

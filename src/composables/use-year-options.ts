@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import type { ComputedRef } from 'vue'
-import type { SelectOption } from '../components'
+import type { SelectOption } from '../types'
 
 export const useYearOptions = (currentDisplayYear: ComputedRef<number>, props?: { from?: Date; to?: Date }) => {
   const yearOptions = computed<SelectOption[]>(() => {
