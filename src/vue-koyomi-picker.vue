@@ -44,11 +44,13 @@
                         class="koyomi-picker__controller"
                         @click="onClickMonthControl('previous')"
                       >
-                        <KoyomiIcon name="mdiChevronLeft" aria-label="前月" />
+                        <KoyomiIcon name="mdiChevronLeft" :aria-label="props.phrases.lastMonth" />
                       </button>
                     </li>
                     <li class="koyomi-picker__controller-item">
-                      <button class="koyomi-picker__controller" @click="onClickSetToday">今日</button>
+                      <button class="koyomi-picker__controller" @click="onClickSetToday">
+                        {{ props.phrases.today }}
+                      </button>
                     </li>
                     <li class="koyomi-picker__controller-item">
                       <button
@@ -56,7 +58,7 @@
                         class="koyomi-picker__controller"
                         @click="onClickMonthControl('next')"
                       >
-                        <KoyomiIcon name="mdiChevronRight" aria-label="次月" />
+                        <KoyomiIcon name="mdiChevronRight" :aria-label="props.phrases.followingMonth" />
                       </button>
                     </li>
                   </ul>
@@ -87,7 +89,7 @@
               </div>
             </div>
             <div class="koyomi-picker__footer">
-              <button class="koyomi-picker__submit" @click="onSubmit">決定</button>
+              <button class="koyomi-picker__submit" @click="onSubmit">{{ props.phrases.ok }}</button>
             </div>
           </div>
         </div>
@@ -117,6 +119,7 @@ type Props = {
   stepMinutes?: number
   firstDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6
   dayNames?: string[]
+  phrases?: { today: string; lastMonth: string; followingMonth: string; ok: string }
   teleportTo?: string
 }
 
@@ -127,6 +130,7 @@ const props = withDefaults(defineProps<Props>(), {
   format: 'yyyy/MM/dd HH:mm',
   firstDay: 0,
   dayNames: () => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  phrases: () => ({ today: 'Today', lastMonth: 'Last month', followingMonth: 'Following month', ok: 'OK' }),
   teleportTo: 'body',
 })
 

@@ -53,6 +53,10 @@ export default {
       description:
         'Specify the name of the day of the week to be displayed in the calendar.<br />It is not linked to firstDay and needs to be reordered accordingly.',
     },
+    phrases: {
+      control: { type: 'object' },
+      description: 'Specify phrases to be used for buttons, etc.',
+    },
     teleportTo: {
       control: { type: 'text' },
       description: 'Specifies the teleport destination.<br />See Vue3 documentation for `teleport` .',
@@ -286,4 +290,38 @@ export const CustomDays = CustomDaysTemplate.bind({})
 CustomDays.args = {
   firstDay: 1,
   dayNames: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+}
+
+const CustomPhrasesTemplate = (args) => ({
+  components: { VueKoyomiPicker },
+  data() {
+    return {
+      value: null,
+    }
+  },
+  setup() {
+    return {
+      args,
+    }
+  },
+  template: `
+    <div>
+      <VueKoyomiPicker v-model="value" :day-names="args.dayNames" :phrases="args.phrases">
+        <template #activator="{ on, formattedValue }">
+          <input :value="formattedValue" type="text" @focus="on" />
+        </template>
+      </VueKoyomiPicker>
+    </div>
+  `,
+})
+
+export const CustomPhrases = CustomPhrasesTemplate.bind({})
+CustomPhrases.args = {
+  dayNames: ['日', '月', '火', '水', '木', '金', '土'],
+  phrases: {
+    ok: '決定',
+    today: '今日',
+    lastMonth: '前月',
+    followingMonth: '次月',
+  },
 }
