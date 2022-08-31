@@ -115,7 +115,7 @@ type Props = {
   disabledDays?: number[]
   disabledHours?: number[]
   stepMinutes?: number
-  startDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+  firstDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6
   dayNames?: string[]
   teleportTo?: string
 }
@@ -125,7 +125,7 @@ const BREAKPOINT = 440
 const props = withDefaults(defineProps<Props>(), {
   defaultDate: () => new Date(),
   format: 'yyyy/MM/dd HH:mm',
-  startDay: 0,
+  firstDay: 0,
   dayNames: () => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   teleportTo: 'body',
 })
@@ -149,7 +149,7 @@ const {
   calendarData,
 } = useCalendar({
   modelValue: props.modelValue,
-  startDay: props.startDay,
+  firstDay: props.firstDay,
   defaultDate: props.defaultDate,
   from: props.from,
   to: props.to,
@@ -165,8 +165,8 @@ const isPreviousDisplayMonthActive = computed(() => {
 
 const isNextDisplayMonthActive = computed(() => {
   if (!props.to) return true
-  const firstDay = startOfMonth(nextDisplayMonth.value)
-  return isBefore(firstDay, props.to)
+  const firstDayOfMonth = startOfMonth(nextDisplayMonth.value)
+  return isBefore(firstDayOfMonth, props.to)
 })
 
 const onClickMonthControl = (direction: 'previous' | 'next') => {
@@ -245,7 +245,7 @@ const contentRects = reactive<{ top: number; height: number; left: number; right
 })
 
 const setContentRects = () => {
-  if (!activatorRef.value) return
+  if (!activatorRef.value || !activatorRef.value.getClientRects().length) return
   const { top, height, left, right } = activatorRef.value.getClientRects()[0]
   contentRects.top = top
   contentRects.height = height
@@ -254,6 +254,10 @@ const setContentRects = () => {
 }
 
 watch(windowSize.windowSize, () => {
+  setContentRects()
+})
+
+watch(scrollTop.scrollTop, () => {
   setContentRects()
 })
 
@@ -298,6 +302,15 @@ onMounted(() => {
 
   if (props.modelValue) {
     selectedDate.value = props.modelValue
+  } else if (props.defaultDate) {
+    const date = props.defaultDate
+    selectedDate.value = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      props.stepMinutes && props.stepMinutes > 1 ? 0 : date.getMinutes()
+    )
   }
 })
 

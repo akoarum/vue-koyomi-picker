@@ -14,7 +14,7 @@ import { isDateIncludedInSameMonth } from '../helpers/is-date-included-in-same-m
 export type Props = {
   modelValue: Date | null
   selectedDate?: Date | null
-  startDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+  firstDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6
   defaultDate?: Date
   from?: Date
   to?: Date
@@ -78,13 +78,13 @@ export const useCalendar = (props: Props) => {
 
   const calendarData = computed<DateOption[][]>(() => {
     const data: DateOption[][] = []
-    const countOfEndWeek = getWeekOfMonth(currentDisplayLastDayOfMonth.value, { weekStartsOn: props.startDay || 0 })
+    const countOfEndWeek = getWeekOfMonth(currentDisplayLastDayOfMonth.value, { weekStartsOn: props.firstDay || 0 })
     const selectedDate = getSelectedDate()
     let date: Date = currentDisplayFirstOfMonth.value
     const weekNumbers: number[] = []
 
     for (let day = 0; day < 7; day++) {
-      weekNumbers.push(props.startDay ? (day + props.startDay) % 7 : day)
+      weekNumbers.push(props.firstDay ? (day + props.firstDay) % 7 : day)
     }
 
     date = new Date(date.setDate(date.getDate() - weekNumbers.findIndex((number) => number === date.getDay())))
