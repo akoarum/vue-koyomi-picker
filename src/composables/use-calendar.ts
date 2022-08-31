@@ -1,5 +1,14 @@
 import { ref, computed } from 'vue'
-import { startOfMonth, lastDayOfMonth, subMonths, addMonths, getWeekOfMonth, isBefore, isAfter } from 'date-fns'
+import {
+  startOfMonth,
+  lastDayOfMonth,
+  subMonths,
+  addMonths,
+  getWeekOfMonth,
+  isBefore,
+  isAfter,
+  isSameDay,
+} from 'date-fns'
 import { isDateIncludedInSameMonth } from '../helpers/is-date-included-in-same-month'
 
 export type Props = {
@@ -9,6 +18,8 @@ export type Props = {
   defaultDate?: Date
   from?: Date
   to?: Date
+  disabledDates?: Date[]
+  disabledDays?: number[]
 }
 
 export type DateOption = {
@@ -29,6 +40,9 @@ export const useCalendar = (props: Props) => {
   const nextDisplayMonth = computed(() => addMonths(currentDisplayDate.value, 1))
 
   const getDateIsActive = (date: Date) => {
+    if (props.disabledDays && props.disabledDays.includes(date.getDay())) return false
+    if (props.disabledDates && props.disabledDates.some((disabledDate) => isSameDay(disabledDate, date))) return false
+
     const cloneFromDate = props.from ? new Date(props.from) : null
     const afterFromProp = cloneFromDate
       ? isAfter(date, new Date(cloneFromDate.setDate(cloneFromDate.getDate() - 1)))

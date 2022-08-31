@@ -27,13 +27,18 @@ const Template = (args) => ({
       <p>state: {{ value }}</p>
       <VueKoyomiPicker
         v-model="value"
-        :from="args.from"
         :to="args.to"
+        :from="args.from"
+        :default-date="args.defaultDate"
+        :format="args.format"
         :only-date="args.onlyDate"
-        :start-day="args.startDay"
-        :day-names="args.dayNames"
+        :disabled-dates="args.disabledDates"
+        :disabled-days="args.disabledDays"
         :disabled-hours="args.disabledHours"
         :step-minutes="args.stepMinutes"
+        :start-day="args.startDay"
+        :day-names="args.dayNames"
+        :teleport-to="args.teleportTo"
       >
         <template #activator="{ on, formattedValue }">
           <input :value="formattedValue" type="text" @focus="on" />
@@ -45,11 +50,16 @@ const Template = (args) => ({
 
 export const Default = Template.bind({})
 Default.args = {
-  from: new Date('2020/04/01 09:30'),
   to: new Date('2022/10/15 18:45'),
-  startDay: 0,
+  from: new Date('2020/04/01 09:30'),
+  defaultDate: new Date(),
+  format: 'yyyy/MM/dd HH:mm',
   onlyDate: false,
-  dayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  disabledDates: [],
+  disabledDays: [],
   disabledHours: [],
   stepMinutes: 1,
+  startDay: 0,
+  dayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  teleportTo: 'body',
 }

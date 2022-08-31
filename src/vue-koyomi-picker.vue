@@ -111,13 +111,13 @@ type Props = {
   defaultDate?: Date
   format?: string
   onlyDate?: boolean
-  disabledDates?: number[]
+  disabledDates?: Date[]
   disabledDays?: number[]
   disabledHours?: number[]
   stepMinutes?: number
-  teleportTo?: string
   startDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6
   dayNames?: string[]
+  teleportTo?: string
 }
 
 const BREAKPOINT = 440
@@ -125,9 +125,9 @@ const BREAKPOINT = 440
 const props = withDefaults(defineProps<Props>(), {
   defaultDate: () => new Date(),
   format: 'yyyy/MM/dd HH:mm',
-  teleportTo: 'body',
   startDay: 0,
   dayNames: () => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  teleportTo: 'body',
 })
 
 const emits = defineEmits<{
@@ -153,6 +153,8 @@ const {
   defaultDate: props.defaultDate,
   from: props.from,
   to: props.to,
+  disabledDates: props.disabledDates,
+  disabledDays: props.disabledDays,
 })
 
 const isPreviousDisplayMonthActive = computed(() => {
@@ -235,13 +237,20 @@ const onSubmit = () => {
 }
 
 const activatorRef = ref<HTMLDivElement | null>(null)
-const contentRects = reactive<{ top: number; height: number }>({ top: 0, height: 0 })
+const contentRects = reactive<{ top: number; height: number; left: number; right: number }>({
+  top: 0,
+  height: 0,
+  left: 0,
+  right: 0,
+})
 
 const setContentRects = () => {
   if (!activatorRef.value) return
-  const { top, height } = activatorRef.value.getClientRects()[0]
+  const { top, height, left, right } = activatorRef.value.getClientRects()[0]
   contentRects.top = top
   contentRects.height = height
+  contentRects.left = left
+  contentRects.right = right
 }
 
 watch(windowSize.windowSize, () => {
@@ -255,6 +264,13 @@ const contentStyle = computed<{ [key: string]: string }>(() => {
   if (windowSize.windowSize.windowHeight - contentRects.top + contentRects.height > 200) {
     styles.top = `${contentRects.top + contentRects.height + 8}px`
   }
+
+  if (windowSize.windowSize.windowWidth - contentRects.left > 440) {
+    styles.left = `${contentRects.left}px`
+  } else {
+    styles.right = `${windowSize.windowSize.windowWidth - contentRects.right}px`
+  }
+
   return styles
 })
 
