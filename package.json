@@ -25,11 +25,12 @@
     "vue",
     "vue3",
     "nuxt",
-    "datePicker",
-    "dateTimePicker"
+    "date-picker",
+    "datetime-picker",
+    "picker"
   ],
-  "author": "akoarum",
-  "license": "Apache-2.0",
+  "author": "Kenty Akoarum <contact@akoarum.net>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/akoarum/vue-koyomi-picker/issues"
   },
