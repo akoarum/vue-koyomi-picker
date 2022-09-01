@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, defineProps, defineEmits, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { reactive, ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import type { SelectOption } from '../types'
 

@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, defineProps, withDefaults, defineEmits } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, withDefaults } from 'vue'
 import { format, startOfMonth, lastDayOfMonth, isBefore, isAfter } from 'date-fns'
 import { KoyomiDates, KoyomiIcon, KoyomiSelect, KoyomiTimes } from './components'
 import { useCalendar, useYearOptions, useMonthOptions, useWindowSize, useScrollTop } from './composables'

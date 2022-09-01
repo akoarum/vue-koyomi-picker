@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, withDefaults } from 'vue'
+import { computed, withDefaults } from 'vue'
 import * as mdiIcon from '@mdi/js'
 
 export type Props = {

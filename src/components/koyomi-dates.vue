@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, computed } from 'vue'
+import { computed } from 'vue'
 import { format } from 'date-fns'
 import type { DateOption } from '../composables'
 

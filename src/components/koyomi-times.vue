@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, withDefaults, watch, onMounted, nextTick } from 'vue'
+import { ref, withDefaults, watch, onMounted, nextTick } from 'vue'
 import { isBefore, isAfter } from 'date-fns'
 import { useTimes } from '../composables'
 
