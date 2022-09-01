@@ -7,6 +7,12 @@ Supported date mode and datetime mode.
 
 > `Koyomi` is Japanese for calendar.
 
+## Demo
+
+Please see the Storybook below.
+
+https://dark-cloud-7478.spearly.app/
+
 ## Installation
 
 ### Install
